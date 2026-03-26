@@ -1,6 +1,13 @@
 name: Docker Run
 on:
   workflow_call:
+    secrets:
+      DOCKER_USERNAME:
+        required: true
+      DOCKERHUB_TOKEN:
+        required: true
+      DOCKERHUB_PROJECT_NAME:
+        required: true
 
 jobs:
     build_jenkins:
