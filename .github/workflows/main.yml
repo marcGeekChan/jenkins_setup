@@ -54,9 +54,15 @@ jobs:
       needs: build_jenkins
       steps:
       - uses: actions/checkout@v4
+      - name: Extract metadata
+        id: meta
+        run: |
+          echo "REPO_NAME=${GITHUB_REPOSITORY##*/}" >> "$GITHUB_OUTPUT"
+          echo "SHORT_SHA=${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
       - name: Export env variables
         run: |
-          echo "IMAGE=${{ needs.build_jenkins.outputs.pushed_image }}" >> .env
+          IMAGE="${DOCKER_USERNAME}/${DOCKERHUB_PROJECT_NAME}:${SHORT_SHA}"
+          echo "IMAGE=$IMAGE" > .env
       - name: down
         run: docker compose down
       - name: up
