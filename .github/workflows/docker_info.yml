@@ -1,0 +1,9 @@
+name: Docker Info Check
+on: [push]
+
+jobs:
+    check-docker:
+      runs-on: self-hosted
+      steps:
+      - name: Display Docker system-wide information
+        run: docker info
