@@ -46,6 +46,10 @@ jobs:
       needs: build_jenkins
       steps:
       - uses: actions/checkout@v4
+      - name: Extract metadata
+        id: meta
+        run: |
+          echo "SHORT_SHA=${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
       - name: Export env variables
         run: |
           echo "IMAGE=${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKERHUB_PROJECT_NAME }}:${{ steps.meta.outputs.SHORT_SHA }}" >> .env
