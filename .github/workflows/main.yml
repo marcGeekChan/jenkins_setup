@@ -36,6 +36,13 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
+      - name: Debug IMAGE
+        run: |
+          echo "IMAGE=${{ steps.image.outputs.IMAGE }}"
+          echo "SHORT_SHA=${{ steps.meta.outputs.SHORT_SHA }}"
+          echo "DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}"
+          echo "PROJECT_NAME=${{ secrets.DOCKERHUB_PROJECT_NAME }}"
+
       # 9. Build and push prod image
       - name: Build and push production image
         uses: docker/build-push-action@v7
