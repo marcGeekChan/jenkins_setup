@@ -61,8 +61,7 @@ jobs:
           echo "SHORT_SHA=${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
       - name: Export env variables
         run: |
-          IMAGE="${DOCKER_USERNAME}/${DOCKERHUB_PROJECT_NAME}:${SHORT_SHA}"
-          echo "IMAGE=$IMAGE" > .env
+          echo "IMAGE=${DOCKER_USERNAME}/${DOCKERHUB_PROJECT_NAME}:${SHORT_SHA}" > .env
       - name: down
         run: docker compose down
       - name: up
