@@ -1,4 +1,4 @@
-name: Docker Info Check
+name: Docker Run
 on: [push]
 
 jobs:
