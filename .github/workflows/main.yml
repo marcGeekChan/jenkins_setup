@@ -51,7 +51,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Export env variables
         run: |
-          echo "${{ needs.build_jenkins.outputs.pushed_image }}" >> .env
+          echo "IMAGE=${{ needs.build_jenkins.outputs.pushed_image }}" > .env
       - name: down
         run: docker compose down
       - name: up
