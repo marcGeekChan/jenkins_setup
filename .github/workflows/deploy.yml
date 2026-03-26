@@ -17,8 +17,8 @@ jobs:
       - name: Extract metadata
         id: meta
         run: |
-          echo "REPO_NAME=${GITHUB_REPOSITORY##*/}" >> "$GITHUB_OUTPUT"
           echo "SHORT_SHA=${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
+      - name: update .env
           echo "IMAGE=${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKERHUB_PROJECT_NAME }}:${{ steps.meta.outputs.SHORT_SHA }}" > .env
       - name: down
         run: docker compose down
