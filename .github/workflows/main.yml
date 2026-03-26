@@ -4,22 +4,25 @@ on: [push]
 jobs:
     build_jenkins:
       runs-on: self-hosted
+      outputs:
+        pushed_image: ${{ steps.meta.outputs.resultat }}
       steps:
       - name: Checkout
         uses: actions/checkout@v4
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v4
-      # 2. Set up Docker Buildx
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v4
 
-      # 5. Extract metadata
       - name: Extract metadata
         id: meta
         run: |
           echo "REPO_NAME=${GITHUB_REPOSITORY##*/}" >> "$GITHUB_OUTPUT"
           echo "SHORT_SHA=${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
+
+      - name: Image Unique
+        id: image
+        run: |
+          echo "IMAGE=${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKERHUB_PROJECT_NAME }}:${{ steps.meta.outputs.SHORT_SHA }}" >> "$GITHUB_OUTPUT"
 
       # 8. Login to Docker Hub
       - name: Log in to Docker Hub
@@ -46,13 +49,9 @@ jobs:
       needs: build_jenkins
       steps:
       - uses: actions/checkout@v4
-      - name: Extract metadata
-        id: meta
-        run: |
-          echo "SHORT_SHA=${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
       - name: Export env variables
         run: |
-          echo "IMAGE=${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKERHUB_PROJECT_NAME }}:${{ steps.meta.outputs.SHORT_SHA }}" >> .env
+          echo "${{ needs.build_jenkins.outputs.pushed_image }}" >> .env
       - name: down
         run: docker compose down
       - name: up
