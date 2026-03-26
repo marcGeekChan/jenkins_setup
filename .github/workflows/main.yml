@@ -5,7 +5,7 @@ jobs:
     build_jenkins:
       runs-on: self-hosted
       outputs:
-        pushed_image: ${{ steps.meta.outputs.resultat }}
+        pushed_image: ${{ steps.meta.outputs.image }}
       steps:
       - name: Checkout
         uses: actions/checkout@v4
