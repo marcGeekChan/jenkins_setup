@@ -19,17 +19,22 @@ jobs:
         run: |
           echo "REPO_NAME=${GITHUB_REPOSITORY##*/}" >> "$GITHUB_OUTPUT"
           echo "SHORT_SHA=${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
-      - name: Multiple commands
-        uses: appleboy/ssh-action@v1
-        with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.KEY }}
-          port: ${{ secrets.PORT }}
-          script: |
-            rm -rf /tmp/app
-            git clone https://github.com/${{ github.repository }}.git /tmp/app
-            cd /tmp/app
-            echo "IMAGE=${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKERHUB_PROJECT_NAME }}:${{ steps.meta.outputs.SHORT_SHA }}" > .env
-            docker compose down
-            docker compose up -d
+          echo "IMAGE=${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKERHUB_PROJECT_NAME }}:${{ steps.meta.outputs.SHORT_SHA }}" > .env
+      - name: down
+        run: docker compose down
+      - name: up
+        run: docker compose up -d
+      # - name: Multiple commands
+      #   uses: appleboy/ssh-action@v1
+      #   with:
+      #     host: ${{ secrets.HOST }}
+      #     username: ${{ secrets.USERNAME }}
+      #     key: ${{ secrets.KEY }}
+      #     port: ${{ secrets.PORT }}
+      #     script: |
+      #       rm -rf /tmp/app
+      #       git clone https://github.com/${{ github.repository }}.git /tmp/app
+      #       cd /tmp/app
+      #       echo "IMAGE=${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKERHUB_PROJECT_NAME }}:${{ steps.meta.outputs.SHORT_SHA }}" > .env
+      #       docker compose down
+      #       docker compose up -d
