@@ -41,15 +41,14 @@ jobs:
             ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKERHUB_PROJECT_NAME }}:${{ steps.meta.outputs.SHORT_SHA }}
           cache-from: type=local,src=/tmp/.buildx-
 
-      - name: Export env variables
-        run: |
-          echo "IMAGE=${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKERHUB_PROJECT_NAME }}:${{ steps.meta.outputs.SHORT_SHA }}" >> .env
-
     install_jenkins:
       runs-on: self-hosted
       needs: build_jenkins
       steps:
       - uses: actions/checkout@v4
+      - name: Export env variables
+        run: |
+          echo "IMAGE=${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKERHUB_PROJECT_NAME }}:${{ steps.meta.outputs.SHORT_SHA }}" >> .env
       - name: down
         run: docker compose down
       - name: up
