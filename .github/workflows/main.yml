@@ -1,0 +1,74 @@
+name: Docker Run
+on: [push]
+
+jobs:
+    build_jenkins:
+      runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
+      # 2. Set up Docker Buildx
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
+
+      # 3. Cache Docker layers
+      - name: Cache Docker layers
+        uses: actions/cache@v5
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: ${{ runner.os }}-buildx-
+
+      # 5. Extract metadata
+      - name: Extract metadata
+        id: meta
+        run: |
+          echo "REPO_NAME=${GITHUB_REPOSITORY##*/}" >> "$GITHUB_OUTPUT"
+          echo "SHORT_SHA=${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
+
+      # 6. Build dev Docker image
+      - name: Build Docker image for tests
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          file: Dockerfile.dev
+          tags: ${{ steps.meta.outputs.REPO_NAME }}-dev:latest
+          load: true # Load to local Docker daemon for testing
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache,mode=max
+
+      # 8. Login to Docker Hub
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v4
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      # 9. Build and push prod image
+      - name: Build and push production image
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          file: Dockerfile
+          push: true
+          platforms: linux/amd64,linux/arm64
+          tags: |
+            ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKERHUB_PROJECT_NAME }}:latest
+            ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKERHUB_PROJECT_NAME }}:${{ steps.meta.outputs.SHORT_SHA }}
+          cache-from: type=local,src=/tmp/.buildx-
+
+      - name: Export env variables
+        run: |
+          echo "IMAGE=${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKERHUB_PROJECT_NAME }}:${{ steps.meta.outputs.SHORT_SHA }}" >> .env
+
+    install_jenkins:
+      runs-on: self-hosted
+      needs: build_jenkins
+      steps:
+      - uses: actions/checkout@v4
+      - name: down
+        run: docker compose down
+      - name: up
+        run: docker compose up -d
+
