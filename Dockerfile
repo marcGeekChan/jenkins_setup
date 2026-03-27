@@ -12,12 +12,12 @@ RUN apt-get update && \
         libssl-dev \
         libxml2-dev \
         git \
-        curl && \
-        libpq-dev && \
-        build-essential && \
-        libfreetype6-dev && \
-        libharfbuzz-dev && \
-        libfribidi-dev
+        curl \
+        libpq-dev \
+        build-essential \
+        libfreetype6-dev \
+        libharfbuzz-dev \
+        libfribidi-dev && \
     rm -rf /var/lib/apt/lists/*
 
 USER jenkins
