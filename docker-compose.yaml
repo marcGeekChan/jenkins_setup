@@ -9,6 +9,8 @@ services:
     container_name: jenkins
     volumes:
       - jenkins_home:/var/jenkins_home
+      - renv:/usr/local/lib/R/site-library/renv
+      - renv-cache:/root/.cache/R/renv
       - /var/run/docker.sock:/var/run/docker.sock
 volumes:
   jenkins_home:
