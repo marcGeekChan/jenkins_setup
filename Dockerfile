@@ -17,6 +17,7 @@ RUN apt-get update && \
         build-essential \
         libfreetype6-dev \
         libharfbuzz-dev \
+        libfontconfig1-dev \
         libfribidi-dev && \
     rm -rf /var/lib/apt/lists/*
 
