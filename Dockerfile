@@ -1,7 +1,5 @@
 FROM jenkins/jenkins:lts
 
-USER ROOT
-
 RUN apt-get update && \
     apt-get install ca-certificates curl gnupg && \
     install -m 0755 -d /etc/apt/keyrings && \
