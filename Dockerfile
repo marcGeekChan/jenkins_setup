@@ -13,6 +13,11 @@ RUN apt-get update && \
         libxml2-dev \
         git \
         curl && \
+        libpq-dev && \
+        build-essential && \
+        libfreetype6-dev && \
+        libharfbuzz-dev && \
+        libfribidi-dev
     rm -rf /var/lib/apt/lists/*
 
 USER jenkins
