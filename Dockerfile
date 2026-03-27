@@ -14,8 +14,4 @@ RUN apt-get update && \
         curl && \
     rm -rf /var/lib/apt/lists/*
 
-# Install docker CLI
-RUN apt-get update && \
-    apt-get install -y docker-ce-cli
-
 USER jenkins
